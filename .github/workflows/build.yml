@@ -2,7 +2,10 @@ name: build
 on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        os: [macos-13, macos-15]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -13,5 +16,5 @@ jobs:
         run: codesign --force --sign - build/Build/Products/Release/AppleIGC.kext
       - uses: actions/upload-artifact@v4
         with:
-          name: AppleIGC-kext
+          name: AppleIGC-kext-${{ matrix.os }}
           path: build/Build/Products/Release/AppleIGC.kext
